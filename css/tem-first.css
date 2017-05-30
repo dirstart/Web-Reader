@@ -145,3 +145,80 @@ body{
 	background-position: center;
 /*				background-color: #00f;*/
 }
+
+
+.bottom-pannel-bk{
+	position: fixed;
+	bottom: 70px;
+	height: 135px;
+	width: 100%;
+	background: #000;
+	opacity: 0.9;
+	z-index: 9999;
+/*	margin-bottom: -1px;*/
+/*	border-bottom: 1px solid rgba(0, 0, 0, 0.9);*/
+}
+.bottom-pannel{
+	position: fixed;
+	bottom: 70px;
+	height: 135px;
+	width: 100%;
+	background: none;
+	color: #fff;
+	z-index:10001;
+}
+.font-child-mod{
+	padding: 5px 10px;
+	margin: 15px;
+/*	background: #00f;*/
+}
+.font-child-mod span{
+	display: inline-block;
+	padding-right: 20px;
+	padding-left: 10px;
+}
+.font-size-button{
+	background: none;
+	border: 1px solid #8c8c8c;
+	border-radius: 16px;
+	color: #fff;
+	padding: 5px 40px;
+}
+.font-child-mod .button-left{
+	margin-right: 10px;
+}
+
+/*字体导航栏 -- end --  */
+.bgcolor-button{
+	display: inline-block;
+	height: 32px;
+	vertical-align: middle;
+
+}
+.bgcolor-item{
+	width: 30px;
+	height: 30px;
+	margin-right: 4px;
+	border-radius: 50%;
+	background-color: #000;
+	display: inline-block;
+	border: 1px solid #ff7800;
+}
+.bg-1{
+	background-color: #f7eee5;
+}
+.bg-2{
+	background-color: #e9dfc7;
+}	
+.bg-3{
+	background-color: #a4a4a4;
+}
+.bg-4{
+	background-color: #cdefce;
+}
+.bg-5{
+	background-color: #283548;
+}
+.bg-6{
+	background-color: #666bfb;
+}

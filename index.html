@@ -11,7 +11,12 @@
 	</head>
 	<body>
 		<div id="root" class="container">
-			<div id="top_nav" class="top-nav">
+			<div class="m-article-">
+				<div class="artical-action-middle" id="action_middle">
+					
+				</div>
+			</div>
+			<div id="top_nav" class="top-nav" style="display: none;">
 				<div class="icon-back"></div>
 				<div class="top-nav-title">返回书架</div>
 			</div>
@@ -33,7 +38,7 @@
 				</ul>
 			</div>
 
-			<div id="bottom_nav" class="bottom-nav">
+			<div id="bottom_nav" class="bottom-nav" style="display: none;">
 				<div class="bottom-item">
 					<div class="icon-menu icon-bottom"></div>
 					<div class="title-bottom">目录</div>
@@ -48,8 +53,8 @@
 				</div>			
 			</div>
 
-			<div class="bottom-pannel-bk"></div>
-			<div class="bottom-pannel" id="font-container">
+			<div class="bottom-pannel-bk" style="display: none;"></div>
+			<div class="bottom-pannel" id="font-container" style="display: none;">
 				<div class="font-child-mod">
 					<span>字号</span>
 					<button id="large-font" class="font-size-button button-left">大</button>
@@ -99,9 +104,16 @@
 					};
 				})();
 
-
+				var DOM={
+					top_nav:$('#top_nav'),
+					bottom_nav:$('#bottom_nav')
+				};
+				var Win=$(window);
+				var Doc=$(document);
+				// 这样设置了之后就不用重新去取变量了
 				function main(){
 					// 整个项目的入口函数
+					EventHandler();
 				}
 
 				function ReaderModel(){
@@ -114,10 +126,28 @@
 
 				function EventHandler(){
 					// 交互的事件绑定
+					// touch
+					// zepto模拟用户点击叫做tap
+					// 安卓4.0之前用click有300ms延迟
+					// 新版之后就没有了
+					$('#action_middle').click(function(){
+						if(DOM.top_nav.css('display')=='none'){
+							DOM.bottom_nav.show();
+							DOM.top_nav.show();
+						}else{
+							DOM.bottom_nav.hide();
+							DOM.top_nav.hide();
+						}
+					});
+
+					Win.scroll(function(){
+						DOM.bottom_nav.hide();
+						DOM.top_nav.hide();
+					});
 				}
 
 				main();
-				
+
 			})();
 		</script>
 	</body>
