@@ -74,12 +74,51 @@
 		<script src="lib/zepto.min.js"></script>
 		<script>
 			window.jQuery = $;
+			// 这句话的意思是将window中默认jQuery指向为zepto的$
+			// zepto和jquery几乎一样，不过zepto更加小巧
+			// 这么做是为了保证后面两个插件能够正常地使用
 		</script>
 		<script src="js/jquery.base64.js"></script>
 		<script src="js/jquery.jsonp.js"></script>
 
 		<script>
-			
+			(function(){
+				// util事件框架
+				var Util=(function(){
+					var prefix='html5_reader_';
+					var StorageGetter=function(key){
+						return localStorage.getItem(prefix+key);
+					};
+					var StorageSetter=function(key,value){
+						return localStorage.setItem(prefix+key,value);
+					};
+
+					return {
+						StorageGetter:StorageGetter,
+						StorageSetter:StorageSetter
+					};
+				})();
+
+
+				function main(){
+					// 整个项目的入口函数
+				}
+
+				function ReaderModel(){
+					// 实现和阅读器相关的数据交互的方法
+				}
+
+				function ReaderBaseFrame(){
+					// 渲染基本的UI结构
+				}
+
+				function EventHandler(){
+					// 交互的事件绑定
+				}
+
+				main();
+				
+			})();
 		</script>
 	</body>
 </html>
