@@ -43,22 +43,28 @@
 					<div class="icon-menu icon-bottom"></div>
 					<div class="title-bottom">目录</div>
 				</div>
-				<div class="bottom-item">
+				<div class="bottom-item" id="font_control">
 					<div class="icon-font icon-bottom"></div>
 					<div class="title-bottom">字体</div>
 				</div>
-				<div class="bottom-item">
-					<div class="icon-night icon-bottom"></div>
-					<div class="title-bottom">夜间</div>
-				</div>			
+				<div class="bottom-item" id="night_or_day">
+					<div class="icon-night icon-bottom" id="icon_night"></div>
+					<div class="title-bottom" id="title_night">夜间</div>
+					<div class="icon-day icon-bottom" id="icon_day" style="display: none;"></div>
+					<div class="title-bottom" id="title_day" style="display: none;">白天</div>
+<!-- 						<div class="icon-night icon-bottom" id="icon_night" style="display: none;"></div>
+						<div class="title-bottom" id="title_night" style="display: none;">夜间</div>
+						<div class="icon-day icon-bottom" id="icon_day" ></div>
+						<div class="title-bottom" id="title_day" >白天</div> -->
+				</div>		
 			</div>
 
-			<div class="bottom-pannel-bk" style="display: none;"></div>
-			<div class="bottom-pannel" id="font-container" style="display: none;">
+			<div class="bottom-pannel-bk font-container"  style="display: none;"></div>
+			<div class="bottom-pannel font-container" id="font-container" style="display: none;">
 				<div class="font-child-mod">
 					<span>字号</span>
-					<button id="large-font" class="font-size-button button-left">大</button>
-					<button id="small-font" class="font-size-button">小</button>
+					<button id="large_font" class="font-size-button button-left">大</button>
+					<button id="small_font" class="font-size-button">小</button>
 				</div>
 				<div class="font-child-mod">
 					<span>背景</span>
@@ -106,10 +112,30 @@
 
 				var DOM={
 					top_nav:$('#top_nav'),
-					bottom_nav:$('#bottom_nav')
+					bottom_nav:$('#bottom_nav'),
+					font_container:$('.font-container'),
+					font_control:$('#font_control')
 				};
 				var Win=$(window);
 				var Doc=$(document);
+				var rootContainer=$('#root');
+				var fictionContainer=$('#fiction_chapter_container');
+
+				var initFontSize=Util.StorageGetter('font_size');
+				if(initFontSize==null){
+					initFontSize=14;
+				}else{
+					initFontSize=parseInt(initFontSize);
+				}
+				console.log(initFontSize);
+
+
+
+
+				fictionContainer.css('font-size',initFontSize);
+
+
+
 				// 这样设置了之后就不用重新去取变量了
 				function main(){
 					// 整个项目的入口函数
@@ -137,16 +163,58 @@
 						}else{
 							DOM.bottom_nav.hide();
 							DOM.top_nav.hide();
+
+							DOM.font_control.removeClass("current");
+							DOM.font_container.hide();
 						}
 					});
 
 					Win.scroll(function(){
 						DOM.bottom_nav.hide();
 						DOM.top_nav.hide();
+						DOM.font_container.hide();
 					});
+
+					$('#night_or_day').click(function(){
+						// todo 触发背景黑白切换事件
+					});
+
+					DOM.font_control.click(function(){
+						if(DOM.font_container.css('display')=='none'){
+							DOM.font_container.show();
+							DOM.font_control.addClass("current");
+						}else{
+							DOM.font_container.hide();
+							DOM.font_control.removeClass("current");
+						}
+					});
+
+					$('#large_font').click(function(){
+						if(initFontSize>20){
+							return ;
+						}
+						initFontSize+=1;
+						fictionContainer.css('font-size',initFontSize);
+						Util.StorageSetter('font_size',initFontSize);
+					
+					});
+
+					$('#small_font').click(function(){
+						if(initFontSize<12){
+							return ;
+						}
+						initFontSize-=1;
+						fictionContainer.css('font-size',initFontSize);
+						Util.StorageSetter('font_size',initFontSize);
+					});
+
+
 				}
 
 				main();
+
+				DOM.bottom_nav.show();
+				DOM.top_nav.show();
 
 			})();
 		</script>
