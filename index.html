@@ -68,7 +68,7 @@
 				</div>
 				<div class="font-child-mod">
 					<span>背景</span>
-					<ul class="bgcolor-button">
+					<ul class="bgcolor-button" id="bgcolor_button">
 						<li class="bgcolor-item bg-1"></li>
 						<li class="bgcolor-item bg-2"></li>
 						<li class="bgcolor-item bg-3"></li>
@@ -93,74 +93,85 @@
 		<script src="js/jquery.jsonp.js"></script>
 
 		<script>
-			(function(){
+			(function() {
 				// util事件框架
-				var Util=(function(){
-					var prefix='html5_reader_';
-					var StorageGetter=function(key){
-						return localStorage.getItem(prefix+key);
+				var Util = (function() {
+					var prefix = 'html5_reader_';
+					var StorageGetter = function(key) {
+						return localStorage.getItem(prefix + key);
 					};
-					var StorageSetter=function(key,value){
-						return localStorage.setItem(prefix+key,value);
+					var StorageSetter = function(key, value) {
+						return localStorage.setItem(prefix + key, value);
 					};
 
 					return {
-						StorageGetter:StorageGetter,
-						StorageSetter:StorageSetter
+						StorageGetter: StorageGetter,
+						StorageSetter: StorageSetter
 					};
 				})();
 
-				var DOM={
-					top_nav:$('#top_nav'),
-					bottom_nav:$('#bottom_nav'),
-					font_container:$('.font-container'),
-					font_control:$('#font_control')
+				var DOM = {
+					top_nav: $('#top_nav'),
+					bottom_nav: $('#bottom_nav'),
+					font_container: $('.font-container'),
+					font_control: $('#font_control'),
+					bgcolor_button:$('#bgcolor_button')
 				};
-				var Win=$(window);
-				var Doc=$(document);
-				var rootContainer=$('#root');
-				var fictionContainer=$('#fiction_chapter_container');
+				var Win = $(window);
+				var Doc = $(document);
+				var rootContainer = $('#root');
+				var fictionContainer = $('#fiction_chapter_container');
 
-				var initFontSize=Util.StorageGetter('font_size');
-				if(initFontSize==null){
-					initFontSize=14;
-				}else{
-					initFontSize=parseInt(initFontSize);
+				var initFontSize = Util.StorageGetter('font_size');
+				if (initFontSize == null) {
+					initFontSize = 14;
+				} else {
+					initFontSize = parseInt(initFontSize);
 				}
 				console.log(initFontSize);
+				fictionContainer.css('font-size', initFontSize);
 
+				//   上方为--- 关于控制字体的模块
+				var Array_bgcolor=DOM.bgcolor_button.children("li");
+				for(var i=0;i<Array_bgcolor.length;i++){
+					console.log(Array_bgcolor.css("background-color"));
+				}                                   // To  Do
+				function colorRGB2Hex(color) {
+					var rgb = color.split(',');
+					var r = parseInt(rgb[0].split('(')[1]);
+					var g = parseInt(rgb[1]);
+					var b = parseInt(rgb[2].split(')')[0]);
 
-
-
-				fictionContainer.css('font-size',initFontSize);
-
+					var hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+					return hex;
+				}
 
 
 				// 这样设置了之后就不用重新去取变量了
-				function main(){
+				function main() {
 					// 整个项目的入口函数
 					EventHandler();
 				}
 
-				function ReaderModel(){
+				function ReaderModel() {
 					// 实现和阅读器相关的数据交互的方法
 				}
 
-				function ReaderBaseFrame(){
+				function ReaderBaseFrame() {
 					// 渲染基本的UI结构
 				}
 
-				function EventHandler(){
+				function EventHandler() {
 					// 交互的事件绑定
 					// touch
 					// zepto模拟用户点击叫做tap
 					// 安卓4.0之前用click有300ms延迟
 					// 新版之后就没有了
-					$('#action_middle').click(function(){
-						if(DOM.top_nav.css('display')=='none'){
+					$('#action_middle').click(function() {
+						if (DOM.top_nav.css('display') == 'none') {
 							DOM.bottom_nav.show();
 							DOM.top_nav.show();
-						}else{
+						} else {
 							DOM.bottom_nav.hide();
 							DOM.top_nav.hide();
 
@@ -169,45 +180,56 @@
 						}
 					});
 
-					Win.scroll(function(){
+					Win.scroll(function() {
 						DOM.bottom_nav.hide();
 						DOM.top_nav.hide();
 						DOM.font_container.hide();
 					});
 
-					$('#night_or_day').click(function(){
+					$('#night_or_day').click(function() {
 						// todo 触发背景黑白切换事件
 					});
 
-					DOM.font_control.click(function(){
-						if(DOM.font_container.css('display')=='none'){
+					DOM.font_control.click(function() {
+						if (DOM.font_container.css('display') == 'none') {
 							DOM.font_container.show();
 							DOM.font_control.addClass("current");
-						}else{
+						} else {
 							DOM.font_container.hide();
 							DOM.font_control.removeClass("current");
 						}
 					});
 
-					$('#large_font').click(function(){
-						if(initFontSize>20){
-							return ;
+					$('#large_font').click(function() {
+						if (initFontSize > 20) {
+							return;
 						}
-						initFontSize+=1;
-						fictionContainer.css('font-size',initFontSize);
-						Util.StorageSetter('font_size',initFontSize);
-					
+						initFontSize += 1;
+						fictionContainer.css('font-size', initFontSize);
+						Util.StorageSetter('font_size', initFontSize);
+
 					});
 
-					$('#small_font').click(function(){
-						if(initFontSize<12){
-							return ;
+					$('#small_font').click(function() {
+						if (initFontSize < 12) {
+							return;
 						}
-						initFontSize-=1;
-						fictionContainer.css('font-size',initFontSize);
-						Util.StorageSetter('font_size',initFontSize);
+						initFontSize -= 1;
+						fictionContainer.css('font-size', initFontSize);
+						Util.StorageSetter('font_size', initFontSize);
 					});
 
+					Array_bgcolor.each(function(){
+						$(this).click(function(){
+							var col=$(this).css("background-color");
+							col=colorRGB2Hex(col);
+							fictionContainer.css('background-color',col);
+							// changeBg(col);
+							console.log(col);
+
+							Util.StorageSetter('bg_color', col);
+						});
+					});
 
 				}
 
