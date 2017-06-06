@@ -11,7 +11,7 @@
 	</head>
 	<body>
 		<div id="root" class="container">
-			<div class="m-article-">
+			<div class="m-article-action">
 				<div class="artical-action-middle" id="action_middle">
 					
 				</div>
@@ -29,14 +29,16 @@
 				<p>"上善若水"是一个成语，指的是：像水的品性一样，泽被万物而不争名利。处于众人所不注意的地方或者细微的地方，所以是最接近道的。水，无色无味，在方而法方，在圆而法圆，无所滞，它以百态存于自然界，于自然无所违也。语出《老子》：“上善若水，水善利万物而不争，处众人之所恶（wù），故几于道。”在道家学说里，水为至善至柔；水性绵绵密密，微则无声，巨则汹涌；与人无争却又容纳万物。水有滋养万物的德行，它使万物得到它的利益，而不与万物发生矛盾、冲突，人生之道，莫过于此。</p>
 				<p>"上善若水"是一个成语，指的是：像水的品性一样，泽被万物而不争名利。处于众人所不注意的地方或者细微的地方，所以是最接近道的。水，无色无味，在方而法方，在圆而法圆，无所滞，它以百态存于自然界，于自然无所违也。语出《老子》：“上善若水，水善利万物而不争，处众人之所恶（wù），故几于道。”在道家学说里，水为至善至柔；水性绵绵密密，微则无声，巨则汹涌；与人无争却又容纳万物。水有滋养万物的德行，它使万物得到它的利益，而不与万物发生矛盾、冲突，人生之道，莫过于此。</p>
 				<p>"上善若水"是一个成语，指的是：像水的品性一样，泽被万物而不争名利。处于众人所不注意的地方或者细微的地方，所以是最接近道的。水，无色无味，在方而法方，在圆而法圆，无所滞，它以百态存于自然界，于自然无所违也。语出《老子》：“上善若水，水善利万物而不争，处众人之所恶（wù），故几于道。”在道家学说里，水为至善至柔；水性绵绵密密，微则无声，巨则汹涌；与人无争却又容纳万物。水有滋养万物的德行，它使万物得到它的利益，而不与万物发生矛盾、冲突，人生之道，莫过于此。</p>
+
+				<div class="m-button-bar">
+					<ul class="u-tab">
+						<li id="prev_button">上一章</li>
+						<li id="next_button">下一章</li>
+					</ul>
+				</div>
 			</div>
 				
-			<div class="m-button-bar">
-				<ul class="u-tab">
-					<li id="prev_button">上一章</li>
-					<li id="next_button">下一章</li>
-				</ul>
-			</div>
+
 
 			<div id="bottom_nav" class="bottom-nav" style="display: none;">
 				<div class="bottom-item">
@@ -48,14 +50,14 @@
 					<div class="title-bottom">字体</div>
 				</div>
 				<div class="bottom-item" id="night_or_day">
+				<!-- 夜间 -->
 					<div class="icon-night icon-bottom" id="icon_night"></div>
-					<div class="title-bottom" id="title_night">夜间</div>
+				<!--  白天-->
 					<div class="icon-day icon-bottom" id="icon_day" style="display: none;"></div>
-					<div class="title-bottom" id="title_day" style="display: none;">白天</div>
-<!-- 						<div class="icon-night icon-bottom" id="icon_night" style="display: none;"></div>
-						<div class="title-bottom" id="title_night" style="display: none;">夜间</div>
-						<div class="icon-day icon-bottom" id="icon_day" ></div>
-						<div class="title-bottom" id="title_day" >白天</div> -->
+
+					<div class="title-bottom" id="title_night">夜间</div>
+
+					
 				</div>		
 			</div>
 
@@ -115,15 +117,23 @@
 					bottom_nav: $('#bottom_nav'),
 					font_container: $('.font-container'),
 					font_control: $('#font_control'),
-					bgcolor_button:$('#bgcolor_button')
+					bgcolor_button:$('#bgcolor_button'),
+					night_or_day:$('#night_or_day'),
+					icon_night:$('#icon_night'),
+					icon_day:$('#icon_day'),
+					title_night:$('#title_night')
 				};
 				var Win = $(window);
 				var Doc = $(document);
 				var rootContainer = $('#root');
+				// 字体控制
 				var fictionContainer = $('#fiction_chapter_container');
+				// 颜色控制
+				var Array_bgcolor=DOM.bgcolor_button.children("li");	
+
 
 				var initFontSize = Util.StorageGetter('font_size');
-				if (initFontSize == null) {
+				if (initFontSize === null) {
 					initFontSize = 14;
 				} else {
 					initFontSize = parseInt(initFontSize);
@@ -131,17 +141,25 @@
 				console.log(initFontSize);
 				fictionContainer.css('font-size', initFontSize);
 
-				//   上方为--- 关于控制字体的模块
-				var Array_bgcolor=DOM.bgcolor_button.children("li");
-				for(var i=0;i<Array_bgcolor.length;i++){
-					console.log(Array_bgcolor.css("background-color"));
-				}                                   // To  Do
+
+				var initBgColor=Util.StorageGetter('bg_color');
+				if(initBgColor===null){
+					initBgColor="#e9dfc7";
+				}else{
+					;//do nothing
+				}
+				fictionContainer.css('background-color',initBgColor);
+				console.log(initBgColor);
+
+		
+				// 下方为将颜色的rgb值转化为十六进制值
 				function colorRGB2Hex(color) {
 					var rgb = color.split(',');
 					var r = parseInt(rgb[0].split('(')[1]);
+					// console.log(rgb[0].split('g')[1]);
 					var g = parseInt(rgb[1]);
 					var b = parseInt(rgb[2].split(')')[0]);
-
+					// 上面利用了split实现了类似于筛选功能的效果
 					var hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 					return hex;
 				}
@@ -185,11 +203,7 @@
 						DOM.top_nav.hide();
 						DOM.font_container.hide();
 					});
-
-					$('#night_or_day').click(function() {
-						// todo 触发背景黑白切换事件
-					});
-
+	
 					DOM.font_control.click(function() {
 						if (DOM.font_container.css('display') == 'none') {
 							DOM.font_container.show();
@@ -197,6 +211,21 @@
 						} else {
 							DOM.font_container.hide();
 							DOM.font_control.removeClass("current");
+						}
+					});
+
+					DOM.night_or_day.click(function(){
+						if(DOM.icon_night.css("display")==="block"){		
+							DOM.icon_night.hide();
+							DOM.icon_day.show();
+							DOM.title_night.text("白天");
+
+							Array_bgcolor.eq(4).click();
+						}else{
+							DOM.icon_day.hide();
+							DOM.icon_night.show();
+							DOM.title_night.text("夜间");
+							Array_bgcolor.eq(1).click();
 						}
 					});
 
@@ -224,9 +253,7 @@
 							var col=$(this).css("background-color");
 							col=colorRGB2Hex(col);
 							fictionContainer.css('background-color',col);
-							// changeBg(col);
-							console.log(col);
-
+							// console.log(col);
 							Util.StorageSetter('bg_color', col);
 						});
 					});
