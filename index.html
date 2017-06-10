@@ -96,7 +96,7 @@
 
 		<script>
 			(function() {
-				// util事件框架
+				// util事件框架,基本意思就是将一些比较麻烦或者不易理解的事情封装在里面来做
 				var Util = (function() {
 					var prefix = 'html5_reader_';
 					var StorageGetter = function(key) {
@@ -105,6 +105,18 @@
 					var StorageSetter = function(key, value) {
 						return localStorage.setItem(prefix + key, value);
 					};
+
+					var GetJsonp=function(url,callback){
+						return $.jsonp({
+							url:url,
+							cache:true,
+							callback:'duokan_fiction_chapter',
+							success:function(result){
+								var data=$.base64.decode(result);
+								var json=$.decodeURIComponent(escape(data));
+							}
+						});
+					}
 
 					return {
 						StorageGetter: StorageGetter,
@@ -173,6 +185,20 @@
 
 				function ReaderModel() {
 					// 实现和阅读器相关的数据交互的方法
+
+					var getFictionInfo=function(){
+						$.get('./data/chapter.json',function(){
+							//to do 获得章节信息之后的回调
+						},'json');
+					};
+
+					var getCurrentContent=function(chapter_id){
+						$.get('./data/data'+chapter_id+'.json',function(data){
+							if(data.result==0){
+								var url=data.jsonp;
+							}
+						},'json');
+					};
 				}
 
 				function ReaderBaseFrame() {
