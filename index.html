@@ -24,18 +24,8 @@
 			<!-- 侧边栏 -->
 			<div id="fiction_chapter_title"></div>
 			<div id="fiction_chapter_container" class="m-read-content">
-				<h4>上善若水</h4>
-				<p>"上善若水"是一个成语，指的是：像水的品性一样，泽被万物而不争名利。处于众人所不注意的地方或者细微的地方，所以是最接近道的。水，无色无味，在方而法方，在圆而法圆，无所滞，它以百态存于自然界，于自然无所违也。语出《老子》：“上善若水，水善利万物而不争，处众人之所恶（wù），故几于道。”在道家学说里，水为至善至柔；水性绵绵密密，微则无声，巨则汹涌；与人无争却又容纳万物。水有滋养万物的德行，它使万物得到它的利益，而不与万物发生矛盾、冲突，人生之道，莫过于此。</p>
-				<p>"上善若水"是一个成语，指的是：像水的品性一样，泽被万物而不争名利。处于众人所不注意的地方或者细微的地方，所以是最接近道的。水，无色无味，在方而法方，在圆而法圆，无所滞，它以百态存于自然界，于自然无所违也。语出《老子》：“上善若水，水善利万物而不争，处众人之所恶（wù），故几于道。”在道家学说里，水为至善至柔；水性绵绵密密，微则无声，巨则汹涌；与人无争却又容纳万物。水有滋养万物的德行，它使万物得到它的利益，而不与万物发生矛盾、冲突，人生之道，莫过于此。</p>
-				<p>"上善若水"是一个成语，指的是：像水的品性一样，泽被万物而不争名利。处于众人所不注意的地方或者细微的地方，所以是最接近道的。水，无色无味，在方而法方，在圆而法圆，无所滞，它以百态存于自然界，于自然无所违也。语出《老子》：“上善若水，水善利万物而不争，处众人之所恶（wù），故几于道。”在道家学说里，水为至善至柔；水性绵绵密密，微则无声，巨则汹涌；与人无争却又容纳万物。水有滋养万物的德行，它使万物得到它的利益，而不与万物发生矛盾、冲突，人生之道，莫过于此。</p>
-				<p>"上善若水"是一个成语，指的是：像水的品性一样，泽被万物而不争名利。处于众人所不注意的地方或者细微的地方，所以是最接近道的。水，无色无味，在方而法方，在圆而法圆，无所滞，它以百态存于自然界，于自然无所违也。语出《老子》：“上善若水，水善利万物而不争，处众人之所恶（wù），故几于道。”在道家学说里，水为至善至柔；水性绵绵密密，微则无声，巨则汹涌；与人无争却又容纳万物。水有滋养万物的德行，它使万物得到它的利益，而不与万物发生矛盾、冲突，人生之道，莫过于此。</p>
 
-				<div class="m-button-bar">
-					<ul class="u-tab">
-						<li id="prev_button">上一章</li>
-						<li id="next_button">下一章</li>
-					</ul>
-				</div>
+				
 			</div>
 				
 
@@ -59,6 +49,13 @@
 
 					
 				</div>		
+			</div>
+
+			<div class="m-button-bar">
+					<ul class="u-tab">
+						<li id="prev_button">上一章</li>
+						<li id="next_button">下一章</li>
+					</ul>
 			</div>
 
 			<div class="bottom-pannel-bk font-container"  style="display: none;"></div>
@@ -112,15 +109,18 @@
 							cache:true,
 							callback:'duokan_fiction_chapter',
 							success:function(result){
-								var data=$.base64.decode(result);
-								var json=$.decodeURIComponent(escape(data));
+								var json=$.base64.decode(result);
+								json=decodeURIComponent(escape(json));
+								console.log(json);
+								callback(json);
 							}
 						});
-					}
+					};
 
 					return {
 						StorageGetter: StorageGetter,
-						StorageSetter: StorageSetter
+						StorageSetter: StorageSetter,
+						GetJsonp:GetJsonp
 					};
 				})();
 
@@ -180,29 +180,61 @@
 				// 这样设置了之后就不用重新去取变量了
 				function main() {
 					// 整个项目的入口函数
+					var readerModel=ReaderModel();
+					var readerUI=ReaderBaseFrame(fictionContainer);
+					readerModel.init(function(data){
+						readerUI(data);
+					});
 					EventHandler();
 				}
 
 				function ReaderModel() {
 					// 实现和阅读器相关的数据交互的方法
-
-					var getFictionInfo=function(){
-						$.get('./data/chapter.json',function(){
+					var init=function(UIcallback){
+						getFictionInfo(function(){
+							getCurChapterContent(Chapter_id,function(data){
+								// To do
+								UIcallback && UIcallback(data);
+							});
+						});
+					};
+					var Chapter_id;
+					var getFictionInfo=function(callback){
+						$.get('./data/chapter.json',function(data){
 							//to do 获得章节信息之后的回调
+							Chapter_id=data.chapters[1].chapter_id;
+							callback&&callback();
 						},'json');
 					};
-
-					var getCurrentContent=function(chapter_id){
+					var getCurChapterContent=function(chapter_id,callback){
 						$.get('./data/data'+chapter_id+'.json',function(data){
 							if(data.result==0){
 								var url=data.jsonp;
+								Util.GetJsonp(url,function(data){
+									// debugger
+									callback && callback(data);
+								});
 							}
 						},'json');
 					};
+					return {
+						init:init
+					};
 				}
 
-				function ReaderBaseFrame() {
+				function ReaderBaseFrame(container) {
 					// 渲染基本的UI结构
+					function parseChapterData(jsonData){
+						var jsonObj=JSON.parse(jsonData);
+						var html='<h4>'+jsonObj.t+'</h4>';
+						for(var i=0;i<jsonObj.p.length;i++){
+							html+="<p>"+jsonObj.p[i]+"</p>";
+						}
+						return html;
+					}
+					return function(data){
+						container.html(parseChapterData(data));
+					};
 				}
 
 				function EventHandler() {
@@ -287,9 +319,6 @@
 				}
 
 				main();
-
-				DOM.bottom_nav.show();
-				DOM.top_nav.show();
 
 			})();
 		</script>
