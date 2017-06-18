@@ -93,6 +93,7 @@
 
 		<script>
 			(function() {
+				'use strict';
 				// util事件框架,基本意思就是将一些比较麻烦或者不易理解的事情封装在里面来做
 				var Util = (function() {
 					var prefix = 'html5_reader_';
@@ -199,6 +200,12 @@
 								UIcallback && UIcallback(data);
 							});
 						});
+						// getFictionInfoPromise.then(function(data){
+						// 	getCurChapterContent(Chapter_id,function(data){
+						// 		// To do
+						// 		UIcallback && UIcallback(data);
+						// 	});
+						// });
 					};
 					var Chapter_id;
 					var Chapter_count;
@@ -217,6 +224,27 @@
 							callback&&callback();
 						},'json');
 					};
+
+					var getFictionInfoPromise = new Promise(
+						function(resolve, reject) {
+							$.get('./data/chapter.json', function(data) {
+								if(data.result==0){
+									//to do 获得章节信息之后的回调
+								  	var tem_id = Util.StorageGetter('chapter_id');
+									if (tem_id == null) {
+										Chapter_id = data.chapters[1].chapter_id;
+									} else {
+										Chapter_id = tem_id;
+									}
+									console.log("缓存中章节ID是:" + Chapter_id);
+									Chapter_count = data.chapters.length;
+									console.log(Chapter_count);
+									resolve();
+								}else{
+									reject();
+								}
+							}, 'json');
+					});
 					var getCurChapterContent=function(chapter_id,callback){
 						$.get('./data/data'+chapter_id+'.json',function(data){
 							if(data.result==0){
@@ -350,7 +378,9 @@
 
 					$('#prev_button').click(function(){
 						//获得章节的翻页数据并且渲染。
-						readerModel.prevChapter();
+						readerModel.prevChapter(function(data){
+							readerUI(data);
+						});
 					});
 					$('#next_button').click(function(){
 						readerModel.nextChapter(function(data){
