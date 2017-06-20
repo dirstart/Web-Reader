@@ -312,6 +312,9 @@
 					}
 					return function(data){
 						container.html(parseChapterData(data));
+						// console.log("a");
+						document.body.scrollTop =0;
+						// 回到页面顶部
 					};
 				}
 
